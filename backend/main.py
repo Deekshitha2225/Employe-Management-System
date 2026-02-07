@@ -8,6 +8,10 @@ from backend import models, schemas
 from backend.auth import router as auth_router, get_current_user
 
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
 
 
 
@@ -27,10 +31,15 @@ app.add_middleware(
 
 app.include_router(auth_router)
 
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get("/")
-def read_root():
-    return {"message": "Employee Task Management API is running"}
+def serve_frontend():
+    return FileResponse(os.path.join("frontend", "index.html"))
+
+@app.get("/api-status")
+def api_status():
+    return {"message": "API is running"}
 
 
 # ------------------------------------------------------------
